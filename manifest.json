@@ -1,0 +1,17 @@
+{
+  "name": "PBlate",
+  "description": "Add translations to pbinfo.ro",
+  "version": "0.1",
+  "manifest_version": 3,
+  "options_page": "settings.html",
+  "content_scripts": [
+      {
+        "matches": ["https://www.pbinfo.ro/probleme/*"],
+        "js": ["translate.js"],
+        "css": ["translate.css"]
+      }
+  ],
+  "permissions": [
+    "storage"
+  ]
+}
