@@ -3,12 +3,12 @@
   "description": "Add translations to pbinfo.ro",
   "version": "0.1",
   "manifest_version": 3,
-  "options_page": "settings.html",
+  "options_page": "options/options.html",
   "content_scripts": [
       {
         "matches": ["https://www.pbinfo.ro/probleme/*"],
-        "js": ["translate.js"],
-        "css": ["translate.css"]
+        "js": ["contentScripts/translate.js"],
+        "css": ["contentScripts/translate.css"]
       }
   ],
   "permissions": [
