@@ -1,10 +1,10 @@
 var buttonpres = false
 var translated = false
 var original = ""
+var options = {}
 
 chrome.storage.local.get(['options'], function(result) {
-    url = result.options["url"];
-    showExportBut = result.options["showExport"];
+    options = result.options;
     if (document.readyState == "complete") {
         mainInterject()
     } else {
@@ -37,7 +37,7 @@ function mainInterject() {
                 var loc = getProblemId()
                 var oReq = new XMLHttpRequest();
                 oReq.addEventListener("load", reqListener);
-                oReq.open("GET", `${url}/${loc}.html`);
+                oReq.open("GET", `${options["url"]}/${loc}.html`);
                 oReq.send();
             } else {
                 document.getElementById("enunt").innerHTML = original
@@ -46,13 +46,12 @@ function mainInterject() {
         }
     
         function injectButton() {
-            if (showExportBut) {
-                p.prepend(exbutel)
-            }
+            if (options["showExport"])  {p.prepend(exbutel)}
+            if (options["showEdit"])    {p.prepend(edbutel)}
             p.prepend(butel)
         }
-    
-        function export_enunt() {
+        
+        function get_enunt() {
             data = document.getElementById("enunt").cloneNode(true)
             //Remove adds
             addels = data.getElementsByClassName("adsbygoogle")
@@ -76,14 +75,25 @@ function mainInterject() {
                     sel.remove()
                 }
             }
+            return data
+        }
+
+        function export_enunt() {
+            data = get_enunt()
             console.log(data)
             download(`${getProblemId()}.html`, data.innerHTML.trim())
         }
     
+        function edit_enunt() {
+            data = get_enunt()
+            chrome.runtime.sendMessage({job: 'edit', id: getProblemId(), data: data.innerHTML.trim()})
+        }
+
         const p = document.getElementById("problema-wrapper");
         const enuntel = document.getElementById("meniu-problema-enunt");
         const butel = document.createElement("button");
         const exbutel = document.createElement("button");
+        const edbutel = document.createElement("button");
     
         butel.onclick = trans;
         butel.innerText = "Forditas";
@@ -92,6 +102,10 @@ function mainInterject() {
         exbutel.onclick = export_enunt;
         exbutel.innerText = "Export";
         exbutel.style.float = "right";
+
+        edbutel.onclick = edit_enunt;
+        edbutel.innerText = "Edit";
+        edbutel.style.float = "right";
         
         injectButton()
     

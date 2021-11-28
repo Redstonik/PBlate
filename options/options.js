@@ -1,7 +1,8 @@
 function save() {
     var options = {
         "url" : document.getElementById("url").value ,
-        "showExport" : document.getElementById("exportbtn").checked
+        "showExport" : document.getElementById("exportbtn").checked,
+        "showEdit" : document.getElementById("editbtn").checked
     }
     chrome.storage.local.set({'options': options}, function() {
         el = document.getElementById("out")
@@ -19,5 +20,6 @@ window.onload = function () {
     chrome.storage.local.get(['options'], function(result) {
         document.getElementById("url").value = result.options["url"];
         document.getElementById("exportbtn").checked = result.options["showExport"];
+        document.getElementById("editbtn").checked = result.options["showEdit"];
     });
 }
