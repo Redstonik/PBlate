@@ -29,16 +29,10 @@ function mainInterject() {
         function trans() {
             if (!translated) {
                 original = document.getElementById("enunt").innerHTML
-                
-                function reqListener () {
-                    document.getElementById("enunt").innerHTML = this.responseText;
+                chrome.runtime.sendMessage({job: 'get-trans', id: getProblemId()}, function(res) {
+                    document.getElementById("enunt").innerHTML = res;
                     translated = true
-                }
-                var loc = getProblemId()
-                var oReq = new XMLHttpRequest();
-                oReq.addEventListener("load", reqListener);
-                oReq.open("GET", `${options["url"]}/${loc}.html`);
-                oReq.send();
+                })
             } else {
                 document.getElementById("enunt").innerHTML = original
                 translated = false
