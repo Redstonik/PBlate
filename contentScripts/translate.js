@@ -25,13 +25,21 @@ function mainInterject() {
     if (/probleme\/\d+/.test(window.location.pathname) && 
         !/subpagina/.test(window.location.search)) {
     
-    
+        function clearMsg() {
+            msgspan.innerText = ""
+        }
+
         function trans() {
             if (!translated) {
                 original = document.getElementById("enunt").innerHTML
                 chrome.runtime.sendMessage({job: 'get-trans', id: getProblemId()}, function(res) {
-                    document.getElementById("enunt").innerHTML = res;
-                    translated = true
+                    if (res.status == 404) {
+                        msgspan.innerText = "Translation not found"
+                        setTimeout(clearMsg, 2500)
+                    } else {
+                        document.getElementById("enunt").innerHTML = res.data;
+                        translated = true
+                    }
                 })
             } else {
                 document.getElementById("enunt").innerHTML = original
@@ -40,6 +48,7 @@ function mainInterject() {
         }
     
         function injectButton() {
+            p.prepend(msgspan)
             if (options["showExport"])  {p.prepend(exbutel)}
             if (options["showEdit"])    {p.prepend(edbutel)}
             p.prepend(butel)
@@ -88,6 +97,7 @@ function mainInterject() {
         const butel = document.createElement("button");
         const exbutel = document.createElement("button");
         const edbutel = document.createElement("button");
+        const msgspan = document.createElement("span");
     
         butel.onclick = trans;
         butel.innerText = "Forditas";
@@ -100,6 +110,8 @@ function mainInterject() {
         edbutel.onclick = edit_enunt;
         edbutel.innerText = "Edit";
         edbutel.style.float = "right";
+
+        msgspan.style.float = "right";
         
         injectButton()
     

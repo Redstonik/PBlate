@@ -17,11 +17,9 @@ chrome.runtime.onMessage.addListener(
 
         fetch(`${options["url"]}/${request.id}.html`)
         .then(function (response) {
-            console.log(response);
             response.text()
             .then(function (text) {
-              console.log(text)
-              sendResponse(text)
+              sendResponse({status: response.status , data:text})
             })
         })
         .catch(function (err) {
